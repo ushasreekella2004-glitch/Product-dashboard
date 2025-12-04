@@ -1,0 +1,77 @@
+<div class="app-shell">
+  <header class="app-header">
+    <div>
+      <h1>ShopVerse – Product Dashboard</h1>
+      <span>Internal catalog management for product managers</span>
+    </div>
+
+    <!-- Always visible in the header -->
+    <button class="btn btn-secondary btn-sm" (click)="handleCreateNew()">
+      + Add New Product
+    </button>
+  </header>
+
+  <main class="app-main">
+    <!-- We strictly switch between two screens -->
+    <ng-container [ngSwitch]="viewMode">
+
+      <!-- ========== SCREEN 1: PRODUCT LIST (HOME) ========== -->
+      <div *ngSwitchCase="'list'">
+        <section class="card full-page">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Product Catalog</div>
+              <div class="section-subtitle">Search, filter and select products</div>
+            </div>
+          </div>
+
+          <app-product-list
+            [products]="products"
+            (selectProduct)="handleProductSelected($event)">
+          </app-product-list>
+        </section>
+      </div>
+
+      <!-- ========== SCREEN 2: DETAIL + EDIT VIEW ========== -->
+      <div *ngSwitchCase="'detail'">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                {{ selectedProduct ? 'Product Details & Edit' : 'Create New Product' }}
+              </div>
+              <div class="section-subtitle">
+                {{
+                  selectedProduct
+                    ? 'Review this product and apply updates.'
+                    : 'Fill out details to add a new product to the catalog.'
+                }}
+              </div>
+            </div>
+
+            <!-- Highlighted Back button -->
+            <button
+              class="btn btn-back"
+              type="button"
+              (click)="goBackToList()">
+              ← Back to Products
+            </button>
+          </div>
+
+          <!-- Show details ONLY when editing an existing product -->
+          <ng-container *ngIf="selectedProduct">
+            <app-product-detail [product]="selectedProduct"></app-product-detail>
+          </ng-container>
+
+          <!-- Reactive / template-driven form for edit or create -->
+          <app-product-form
+            [product]="editingProduct"
+            (save)="handleProductSaved($event)"
+            (cancel)="handleFormCancelled()">
+          </app-product-form>
+        </section>
+      </div>
+
+    </ng-container>
+  </main>
+</div>

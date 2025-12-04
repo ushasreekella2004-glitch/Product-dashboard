@@ -1,0 +1,88 @@
+<div>
+  <div class="filter-row">
+    <div class="search-input">
+      <input
+        type="text"
+        placeholder="Search by name or category…"
+        [(ngModel)]="searchTerm" />
+    </div>
+
+    <div class="filter-toggle-group">
+      <label>
+        <input type="checkbox" [(ngModel)]="onlyInStock" />
+        In stock only
+      </label>
+      <label>
+        <input type="checkbox" [(ngModel)]="onlyOnSale" />
+        On sale only
+      </label>
+    </div>
+  </div>
+
+  <div class="table-wrapper" *ngIf="filteredProducts.length; else emptyState">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Availability</th>
+          <th>Sale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let product of filteredProducts"
+          class="product-row"
+          [class.out-of-stock]="!product.inStock"
+          (click)="onSelect(product)"
+          [appOnSaleHighlight]="product.onSale">
+          <td>
+            <div style="font-weight: 500;">
+              {{ product.name }}
+            </div>
+            <div class="section-subtitle">
+              #{{ product.id }}
+            </div>
+          </td>
+          <td>
+            <span class="chip">
+              <span class="chip-dot chip-dot--amber"></span>
+              {{ product.category }}
+            </span>
+          </td>
+          <td>
+            ${{ product.price | number: '1.2-2' }}
+          </td>
+          <td>
+            <span
+              class="chip"
+              [ngClass]="{ 'badge-success': product.inStock }">
+              <span
+                class="chip-dot"
+                [ngClass]="{
+                  'chip-dot--green': product.inStock,
+                  'chip-dot--red': !product.inStock
+                }">
+              </span>
+              {{ product.inStock ? 'In stock' : 'Out of stock' }}
+            </span>
+          </td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="product.onSale ? 'badge-success' : 'badge-muted'">
+              {{ product.onSale ? 'On sale' : 'Not on sale' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <p class="section-subtitle">
+      No products match the current filters.
+    </p>
+  </ng-template>
+</div>

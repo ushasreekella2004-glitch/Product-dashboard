@@ -1,0 +1,60 @@
+<ng-container *ngIf="product">
+  <div class="form-section" style="margin-bottom: 0.5rem;">
+    <div class="section-title">
+      {{ product?.name }}
+    </div>
+    <div class="section-subtitle">
+      Product ID: #{{ product?.id }} • Category: {{ product?.category }}
+    </div>
+  </div>
+
+  <div class="detail-grid form-section">
+    <div>
+      <div class="section-subtitle" style="margin-bottom: 0.2rem;">
+        Description
+      </div>
+      <p class="description">
+        {{ product?.description }}
+      </p>
+    </div>
+    <div>
+      <div class="section-subtitle" style="margin-bottom: 0.2rem;">
+        Status
+      </div>
+      <p>
+        <span class="tag-pill" style="margin-right: 0.25rem;">
+          Price: ${{ product?.price | number: '1.2-2' }}
+        </span>
+      </p>
+      <p>
+        <span class="chip" style="margin-right: 0.25rem;">
+          <span
+            class="chip-dot"
+            [ngClass]="{
+              'chip-dot--green': product?.inStock,
+              'chip-dot--red': !product?.inStock
+            }">
+          </span>
+          {{ product?.inStock ? 'In stock' : 'Out of stock' }}
+        </span>
+
+        <span
+          class="chip"
+          [ngClass]="{ 'badge-success': product?.onSale }">
+          <span
+            class="chip-dot"
+            [ngClass]="{
+              'chip-dot--amber': product?.onSale,
+              'chip-dot--red': !product?.onSale
+            }">
+          </span>
+          {{ product?.onSale ? 'On sale' : 'Not on sale' }}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <button class="btn btn-ghost btn-sm" type="button" (click)="onBack()">
+    ← Back to list
+  </button>
+</ng-container>

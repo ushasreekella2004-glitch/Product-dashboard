@@ -1,0 +1,150 @@
+<div>
+  <!-- TEMPLATE-DRIVEN FORM: Basic quick edit for existing products -->
+  <div class="form-section" *ngIf="product">
+    <div class="section-title" style="margin-bottom: 0.25rem;">
+      Quick Edit
+    </div>
+    <div class="section-subtitle" style="margin-bottom: 0.5rem;">
+      Update core commercial fields without leaving the page.
+    </div>
+
+    <form #quickForm="ngForm" (ngSubmit)="onQuickEditSubmit(quickForm)">
+      <div class="form-field">
+        <label for="quick-name">Name</label>
+        <input
+          id="quick-name"
+          name="name"
+          type="text"
+          [(ngModel)]="quickEditModel.name"
+          required
+          #nameModel="ngModel" />
+        <div
+          class="validation-error"
+          *ngIf="nameModel.invalid && nameModel.touched">
+          Name is required for quick edit.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="quick-price">Price</label>
+        <input
+          id="quick-price"
+          name="price"
+          type="number"
+          min="0.01"
+          step="0.01"
+          [(ngModel)]="quickEditModel.price"
+          required
+          #priceModel="ngModel" />
+        <div
+          class="validation-error"
+          *ngIf="priceModel.invalid && priceModel.touched">
+          Please enter a valid price greater than 0.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>
+          <input
+            type="checkbox"
+            name="onSale"
+            [(ngModel)]="quickEditModel.onSale" />
+          Mark as on sale
+        </label>
+      </div>
+
+      <button
+        class="btn btn-secondary btn-sm"
+        type="submit"
+        [disabled]="quickForm.invalid">
+        Save Quick Edit
+      </button>
+    </form>
+  </div>
+
+  <!-- REACTIVE FORM: Full create / edit -->
+  <div class="form-section">
+    <div class="section-title" style="margin-bottom: 0.25rem;">
+      Full Details
+    </div>
+    <div class="section-subtitle" style="margin-bottom: 0.5rem;">
+      {{ product ? 'Edit selected product with validations.' : 'Create a new product entry.' }}
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onReactiveSubmit()">
+      <input type="hidden" formControlName="id" />
+
+      <div class="form-field">
+        <label for="name">Name *</label>
+        <input id="name" type="text" formControlName="name" />
+        <div class="validation-error" *ngIf="hasError('name', 'required')">
+          Name is required.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="category">Category *</label>
+        <select id="category" formControlName="category">
+          <option value="" disabled>Select category</option>
+          <option *ngFor="let c of categories" [value]="c">
+            {{ c }}
+          </option>
+        </select>
+        <div class="validation-error" *ngIf="hasError('category', 'required')">
+          Category is mandatory.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="price">Price *</label>
+        <input
+          id="price"
+          type="number"
+          min="0.01"
+          step="0.01"
+          formControlName="price" />
+        <div class="validation-error" *ngIf="hasError('price', 'required')">
+          Price is required.
+        </div>
+        <div class="validation-error" *ngIf="hasError('price', 'min')">
+          Price must be greater than 0.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          rows="3"
+          formControlName="description">
+        </textarea>
+      </div>
+
+      <div class="form-field">
+        <label>
+          <input type="checkbox" formControlName="inStock" />
+          In stock
+        </label>
+      </div>
+
+      <div class="form-field">
+        <label>
+          <input type="checkbox" formControlName="onSale" />
+          On sale
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+        <button class="btn btn-primary btn-sm" type="submit">
+          {{ productForm.value.id ? 'Save Changes' : 'Create Product' }}
+        </button>
+        <button
+          class="btn btn-ghost btn-sm"
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
